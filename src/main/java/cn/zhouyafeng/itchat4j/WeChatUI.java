@@ -84,9 +84,9 @@ public class WeChatUI extends Application {
             filterFriendList(newValue);
         });
 
-// 过滤后的好友列表
+        // 过滤后的好友列表
         filteredFriendList = new FilteredList<>(friendListView.getItems());
-// 绑定过滤后的列表
+        // 绑定过滤后的列表
         friendListView.setItems(filteredFriendList);
 
         Button sendButton = new Button("发送");
