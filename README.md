@@ -292,93 +292,93 @@ public class BaseMsg implements Serializable {
 ```java
 package cn.zhouyafeng.itchat4j.face;
 
-import cn.zhouyafeng.itchat4j.beans.BaseMsg;
+import beans.cn.sean.itchat4j.BaseMsg;
 
 /**
  * 消息处理接口
- * 
+ *
  * @author https://github.com/yaphone
  * @date 创建时间：2017年4月20日 上午12:13:49
  * @version 1.0
  *
  */
 public interface IMsgHandlerFace {
-	/**
-	 * 
-	 * @author https://github.com/yaphone
-	 * @date 2017年4月20日 上午12:15:00
-	 * @param msg
-	 * @return
-	 */
-	public String textMsgHandle(BaseMsg msg);
+  /**
+   *
+   * @author https://github.com/yaphone
+   * @date 2017年4月20日 上午12:15:00
+   * @param msg
+   * @return
+   */
+  public String textMsgHandle(BaseMsg msg);
 
-	/**
-	 * 处理图片消息
-	 * 
-	 * @author https://github.com/yaphone
-	 * @date 2017年4月21日 下午11:07:06
-	 * @param msg
-	 * @return
-	 */
-	public String picMsgHandle(BaseMsg msg);
+  /**
+   * 处理图片消息
+   *
+   * @author https://github.com/yaphone
+   * @date 2017年4月21日 下午11:07:06
+   * @param msg
+   * @return
+   */
+  public String picMsgHandle(BaseMsg msg);
 
-	/**
-	 * 处理声音消息
-	 * 
-	 * @author https://github.com/yaphone
-	 * @date 2017年4月22日 上午12:09:44
-	 * @param msg
-	 * @return
-	 */
-	public String voiceMsgHandle(BaseMsg msg);
+  /**
+   * 处理声音消息
+   *
+   * @author https://github.com/yaphone
+   * @date 2017年4月22日 上午12:09:44
+   * @param msg
+   * @return
+   */
+  public String voiceMsgHandle(BaseMsg msg);
 
-	/**
-	 * 处理小视频消息
-	 * 
-	 * @author https://github.com/yaphone
-	 * @date 2017年4月23日 下午12:19:50
-	 * @param msg
-	 * @return
-	 */
-	public String viedoMsgHandle(BaseMsg msg);
+  /**
+   * 处理小视频消息
+   *
+   * @author https://github.com/yaphone
+   * @date 2017年4月23日 下午12:19:50
+   * @param msg
+   * @return
+   */
+  public String viedoMsgHandle(BaseMsg msg);
 
-	/**
-	 * 处理名片消息
-	 * 
-	 * @author https://github.com/yaphone
-	 * @date 2017年5月1日 上午12:50:50
-	 * @param msg
-	 * @return
-	 */
-	public String nameCardMsgHandle(BaseMsg msg);
+  /**
+   * 处理名片消息
+   *
+   * @author https://github.com/yaphone
+   * @date 2017年5月1日 上午12:50:50
+   * @param msg
+   * @return
+   */
+  public String nameCardMsgHandle(BaseMsg msg);
 
-	/**
-	 * 处理系统消息
-	 * 
-	 * @author Relyn
-	 * @date 2017年6月21日17:43:51
-	 * @param msg
-	 * @return
-	 */
-	public void sysMsgHandle(BaseMsg msg);
+  /**
+   * 处理系统消息
+   *
+   * @author Relyn
+   * @date 2017年6月21日17:43:51
+   * @param msg
+   * @return
+   */
+  public void sysMsgHandle(BaseMsg msg);
 
-	/**
-	 * 处理确认添加好友消息
-	 * 
-	 * @date 2017年6月28日 下午10:15:30
-	 * @param msg
-	 * @return
-	 */
-	public String verifyAddFriendMsgHandle(BaseMsg msg);
+  /**
+   * 处理确认添加好友消息
+   *
+   * @date 2017年6月28日 下午10:15:30
+   * @param msg
+   * @return
+   */
+  public String verifyAddFriendMsgHandle(BaseMsg msg);
 
-	/**
-	 * 处理收到的文件消息
-	 * 
-	 * @date 2017年7月21日 下午11:59:14
-	 * @param msg
-	 * @return
-	 */
-	public String mediaMsgHandle(BaseMsg msg);
+  /**
+   * 处理收到的文件消息
+   *
+   * @date 2017年7月21日 下午11:59:14
+   * @param msg
+   * @return
+   */
+  public String mediaMsgHandle(BaseMsg msg);
 
 }
 ```
@@ -400,96 +400,96 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-import cn.zhouyafeng.itchat4j.api.MessageTools;
-import cn.zhouyafeng.itchat4j.api.WechatTools;
-import cn.zhouyafeng.itchat4j.beans.BaseMsg;
-import cn.zhouyafeng.itchat4j.beans.RecommendInfo;
-import cn.zhouyafeng.itchat4j.core.Core;
-import cn.zhouyafeng.itchat4j.face.IMsgHandlerFace;
-import cn.zhouyafeng.itchat4j.utils.enums.MsgTypeEnum;
-import cn.zhouyafeng.itchat4j.utils.tools.DownloadTools;
+import api.cn.sean.itchat4j.MessageTools;
+import api.cn.sean.itchat4j.WechatTools;
+import beans.cn.sean.itchat4j.BaseMsg;
+import beans.cn.sean.itchat4j.RecommendInfo;
+import core.cn.sean.itchat4j.Core;
+import face.cn.sean.itchat4j.IMsgHandlerFace;
+import enums.utils.cn.sean.itchat4j.MsgTypeEnum;
+import tools.utils.cn.sean.itchat4j.DownloadTools;
 
 /**
  * 简单示例程序，收到文本信息自动回复原信息，收到图片、语音、小视频后根据路径自动保存
- * 
+ *
  * @author https://github.com/yaphone
  * @date 创建时间：2017年4月25日 上午12:18:09
  * @version 1.0
  *
  */
 public class SimpleDemo implements IMsgHandlerFace {
-	Logger LOG = Logger.getLogger(SimpleDemo.class);
+  Logger LOG = Logger.getLogger(SimpleDemo.class);
 
-	@Override
-	public String textMsgHandle(BaseMsg msg) {
-		// String docFilePath = "D:/itchat4j/pic/1.jpg"; // 这里是需要发送的文件的路径
-		if (!msg.isGroupMsg()) { // 群消息不处理
-			// String userId = msg.getString("FromUserName");
-			// MessageTools.sendFileMsgByUserId(userId, docFilePath); // 发送文件
-			// MessageTools.sendPicMsgByUserId(userId, docFilePath);
-			String text = msg.getText(); // 发送文本消息，也可调用MessageTools.sendFileMsgByUserId(userId,text);
-			LOG.info(text);
-			if (text.equals("111")) {
-				WechatTools.logout();
-			}
-			if (text.equals("222")) {
-				WechatTools.remarkNameByNickName("yaphone", "Hello");
-			}
-			if (text.equals("333")) { // 测试群列表
-				System.out.print(WechatTools.getGroupNickNameList());
-				System.out.print(WechatTools.getGroupIdList());
-				System.out.print(Core.getInstance().getGroupMemeberMap());
-			}
-			return text;
-		}
-		return null;
-	}
+  @Override
+  public String textMsgHandle(BaseMsg msg) {
+    // String docFilePath = "D:/itchat4j/pic/1.jpg"; // 这里是需要发送的文件的路径
+    if (!msg.isGroupMsg()) { // 群消息不处理
+      // String userId = msg.getString("FromUserName");
+      // MessageTools.sendFileMsgByUserId(userId, docFilePath); // 发送文件
+      // MessageTools.sendPicMsgByUserId(userId, docFilePath);
+      String text = msg.getText(); // 发送文本消息，也可调用MessageTools.sendFileMsgByUserId(userId,text);
+      LOG.info(text);
+      if (text.equals("111")) {
+        WechatTools.logout();
+      }
+      if (text.equals("222")) {
+        WechatTools.remarkNameByNickName("yaphone", "Hello");
+      }
+      if (text.equals("333")) { // 测试群列表
+        System.out.print(WechatTools.getGroupNickNameList());
+        System.out.print(WechatTools.getGroupIdList());
+        System.out.print(Core.getInstance().getGroupMemeberMap());
+      }
+      return text;
+    }
+    return null;
+  }
 
-	@Override
-	public String picMsgHandle(BaseMsg msg) {
-		String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());// 这里使用收到图片的时间作为文件名
-		String picPath = "D://itchat4j/pic" + File.separator + fileName + ".jpg"; // 调用此方法来保存图片
-		DownloadTools.getDownloadFn(msg, MsgTypeEnum.PIC.getType(), picPath); // 保存图片的路径
-		return "图片保存成功";
-	}
+  @Override
+  public String picMsgHandle(BaseMsg msg) {
+    String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());// 这里使用收到图片的时间作为文件名
+    String picPath = "D://itchat4j/pic" + File.separator + fileName + ".jpg"; // 调用此方法来保存图片
+    DownloadTools.getDownloadFn(msg, MsgTypeEnum.PIC.getType(), picPath); // 保存图片的路径
+    return "图片保存成功";
+  }
 
-	@Override
-	public String voiceMsgHandle(BaseMsg msg) {
-		String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-		String voicePath = "D://itchat4j/voice" + File.separator + fileName + ".mp3";
-		DownloadTools.getDownloadFn(msg, MsgTypeEnum.VOICE.getType(), voicePath);
-		return "声音保存成功";
-	}
+  @Override
+  public String voiceMsgHandle(BaseMsg msg) {
+    String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+    String voicePath = "D://itchat4j/voice" + File.separator + fileName + ".mp3";
+    DownloadTools.getDownloadFn(msg, MsgTypeEnum.VOICE.getType(), voicePath);
+    return "声音保存成功";
+  }
 
-	@Override
-	public String viedoMsgHandle(BaseMsg msg) {
-		String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-		String viedoPath = "D://itchat4j/viedo" + File.separator + fileName + ".mp4";
-		DownloadTools.getDownloadFn(msg, MsgTypeEnum.VIEDO.getType(), viedoPath);
-		return "视频保存成功";
-	}
+  @Override
+  public String viedoMsgHandle(BaseMsg msg) {
+    String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+    String viedoPath = "D://itchat4j/viedo" + File.separator + fileName + ".mp4";
+    DownloadTools.getDownloadFn(msg, MsgTypeEnum.VIEDO.getType(), viedoPath);
+    return "视频保存成功";
+  }
 
-	@Override
-	public String nameCardMsgHandle(BaseMsg msg) {
-		return "收到名片消息";
-	}
+  @Override
+  public String nameCardMsgHandle(BaseMsg msg) {
+    return "收到名片消息";
+  }
 
-	@Override
-	public void sysMsgHandle(BaseMsg msg) { // 收到系统消息
-		String text = msg.getContent();
-		LOG.info(text);
-	}
+  @Override
+  public void sysMsgHandle(BaseMsg msg) { // 收到系统消息
+    String text = msg.getContent();
+    LOG.info(text);
+  }
 
-	@Override
-	public String verifyAddFriendMsgHandle(BaseMsg msg) {
-		MessageTools.addFriend(msg, true); // 同意好友请求，false为不接受好友请求
-		RecommendInfo recommendInfo = msg.getRecommendInfo();
-		String nickName = recommendInfo.getNickName();
-		String province = recommendInfo.getProvince();
-		String city = recommendInfo.getCity();
-		String text = "你好，来自" + province + city + "的" + nickName + "， 欢迎添加我为好友！";
-		return text;
-	}
+  @Override
+  public String verifyAddFriendMsgHandle(BaseMsg msg) {
+    MessageTools.addFriend(msg, true); // 同意好友请求，false为不接受好友请求
+    RecommendInfo recommendInfo = msg.getRecommendInfo();
+    String nickName = recommendInfo.getNickName();
+    String province = recommendInfo.getProvince();
+    String city = recommendInfo.getCity();
+    String text = "你好，来自" + province + city + "的" + nickName + "， 欢迎添加我为好友！";
+    return text;
+  }
 
 }
 
@@ -539,101 +539,101 @@ import org.apache.http.util.EntityUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.zhouyafeng.itchat4j.Wechat;
-import cn.zhouyafeng.itchat4j.beans.BaseMsg;
-import cn.zhouyafeng.itchat4j.core.Core;
-import cn.zhouyafeng.itchat4j.face.IMsgHandlerFace;
-import cn.zhouyafeng.itchat4j.utils.MyHttpClient;
-import cn.zhouyafeng.itchat4j.utils.enums.MsgTypeEnum;
-import cn.zhouyafeng.itchat4j.utils.tools.DownloadTools;
+import cn.sean.itchat4j.Wechat;
+import beans.cn.sean.itchat4j.BaseMsg;
+import core.cn.sean.itchat4j.Core;
+import face.cn.sean.itchat4j.IMsgHandlerFace;
+import utils.cn.sean.itchat4j.MyHttpClient;
+import enums.utils.cn.sean.itchat4j.MsgTypeEnum;
+import tools.utils.cn.sean.itchat4j.DownloadTools;
 
 /**
  * 图灵机器人示例
- * 
+ *
  * @author https://github.com/yaphone
  * @date 创建时间：2017年4月24日 上午12:13:26
  * @version 1.0
  *
  */
 public class TulingRobot implements IMsgHandlerFace {
-	Logger logger = Logger.getLogger("TulingRobot");
-	MyHttpClient myHttpClient = Core.getInstance().getMyHttpClient();
-	String url = "http://www.tuling123.com/openapi/api";
-	String apiKey = "597b34bea4ec4c85a775c469c84b6817"; // 这里是我申请的图灵机器人API接口，每天只能5000次调用，建议自己去申请一个，免费的:)
+  Logger logger = Logger.getLogger("TulingRobot");
+  MyHttpClient myHttpClient = Core.getInstance().getMyHttpClient();
+  String url = "http://www.tuling123.com/openapi/api";
+  String apiKey = "597b34bea4ec4c85a775c469c84b6817"; // 这里是我申请的图灵机器人API接口，每天只能5000次调用，建议自己去申请一个，免费的:)
 
-	@Override
-	public String textMsgHandle(BaseMsg msg) {
-		String result = "";
-		String text = msg.getText();
-		Map<String, String> paramMap = new HashMap<String, String>();
-		paramMap.put("key", apiKey);
-		paramMap.put("info", text);
-		paramMap.put("userid", "123456");
-		String paramStr = JSON.toJSONString(paramMap);
-		try {
-			HttpEntity entity = myHttpClient.doPost(url, paramStr);
-			result = EntityUtils.toString(entity, "UTF-8");
-			JSONObject obj = JSON.parseObject(result);
-			if (obj.getString("code").equals("100000")) {
-				result = obj.getString("text");
-			} else {
-				result = "处理有误";
-			}
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
-		return result;
-	}
+  @Override
+  public String textMsgHandle(BaseMsg msg) {
+    String result = "";
+    String text = msg.getText();
+    Map<String, String> paramMap = new HashMap<String, String>();
+    paramMap.put("key", apiKey);
+    paramMap.put("info", text);
+    paramMap.put("userid", "123456");
+    String paramStr = JSON.toJSONString(paramMap);
+    try {
+      HttpEntity entity = myHttpClient.doPost(url, paramStr);
+      result = EntityUtils.toString(entity, "UTF-8");
+      JSONObject obj = JSON.parseObject(result);
+      if (obj.getString("code").equals("100000")) {
+        result = obj.getString("text");
+      } else {
+        result = "处理有误";
+      }
+    } catch (Exception e) {
+      logger.info(e.getMessage());
+    }
+    return result;
+  }
 
-	@Override
-	public String picMsgHandle(BaseMsg msg) {
-		return "收到图片";
-	}
+  @Override
+  public String picMsgHandle(BaseMsg msg) {
+    return "收到图片";
+  }
 
-	@Override
-	public String voiceMsgHandle(BaseMsg msg) {
-		String fileName = String.valueOf(new Date().getTime());
-		String voicePath = "D://itchat4j/voice" + File.separator + fileName + ".mp3";
-		DownloadTools.getDownloadFn(msg, MsgTypeEnum.VOICE.getType(), voicePath);
-		return "收到语音";
-	}
+  @Override
+  public String voiceMsgHandle(BaseMsg msg) {
+    String fileName = String.valueOf(new Date().getTime());
+    String voicePath = "D://itchat4j/voice" + File.separator + fileName + ".mp3";
+    DownloadTools.getDownloadFn(msg, MsgTypeEnum.VOICE.getType(), voicePath);
+    return "收到语音";
+  }
 
-	@Override
-	public String viedoMsgHandle(BaseMsg msg) {
-		String fileName = String.valueOf(new Date().getTime());
-		String viedoPath = "D://itchat4j/viedo" + File.separator + fileName + ".mp4";
-		DownloadTools.getDownloadFn(msg, MsgTypeEnum.VIEDO.getType(), viedoPath);
-		return "收到视频";
-	}
+  @Override
+  public String viedoMsgHandle(BaseMsg msg) {
+    String fileName = String.valueOf(new Date().getTime());
+    String viedoPath = "D://itchat4j/viedo" + File.separator + fileName + ".mp4";
+    DownloadTools.getDownloadFn(msg, MsgTypeEnum.VIEDO.getType(), viedoPath);
+    return "收到视频";
+  }
 
-	public static void main(String[] args) {
-		IMsgHandlerFace msgHandler = new TulingRobot();
-		Wechat wechat = new Wechat(msgHandler, "D://itchat4j/login");
-		wechat.start();
-	}
+  public static void main(String[] args) {
+    IMsgHandlerFace msgHandler = new TulingRobot();
+    Wechat wechat = new Wechat(msgHandler, "D://itchat4j/login");
+    wechat.start();
+  }
 
-	@Override
-	public String nameCardMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String nameCardMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public void sysMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-	}
+  @Override
+  public void sysMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+  }
 
-	@Override
-	public String verifyAddFriendMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String verifyAddFriendMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public String mediaMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String mediaMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }
 
@@ -658,110 +658,110 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
 
-import cn.zhouyafeng.itchat4j.Wechat;
-import cn.zhouyafeng.itchat4j.api.WechatTools;
-import cn.zhouyafeng.itchat4j.beans.BaseMsg;
-import cn.zhouyafeng.itchat4j.core.Core;
-import cn.zhouyafeng.itchat4j.face.IMsgHandlerFace;
-import cn.zhouyafeng.itchat4j.utils.MyHttpClient;
-import cn.zhouyafeng.itchat4j.utils.enums.StorageLoginInfoEnum;
+import cn.sean.itchat4j.Wechat;
+import api.cn.sean.itchat4j.WechatTools;
+import beans.cn.sean.itchat4j.BaseMsg;
+import core.cn.sean.itchat4j.Core;
+import face.cn.sean.itchat4j.IMsgHandlerFace;
+import utils.cn.sean.itchat4j.MyHttpClient;
+import enums.utils.cn.sean.itchat4j.StorageLoginInfoEnum;
 
 /**
  * 此示例演示如何获取所有好友的头像
- * 
+ *
  * @author https://github.com/yaphone
  * @date 创建时间：2017年6月26日 下午11:27:46
  * @version 1.0
  *
  */
 public class PicYourFriends implements IMsgHandlerFace {
-	private static Logger LOG = LoggerFactory.getLogger(PicYourFriends.class);
-	private static final Core core = Core.getInstance();
-	private static final MyHttpClient myHttpClient = core.getMyHttpClient();
-	private static final String path = "D://itchat4j//head"; // 这里需要设置保存头像的路径
+  private static Logger LOG = LoggerFactory.getLogger(PicYourFriends.class);
+  private static final Core core = Core.getInstance();
+  private static final MyHttpClient myHttpClient = core.getMyHttpClient();
+  private static final String path = "D://itchat4j//head"; // 这里需要设置保存头像的路径
 
-	@Override
-	public String textMsgHandle(BaseMsg msg) {
+  @Override
+  public String textMsgHandle(BaseMsg msg) {
 
-		if (!msg.isGroupMsg()) { // 群消息不处理
-			String text = msg.getText(); // 发送文本消息，也可调用MessageTools.sendFileMsgByUserId(userId,text);
-			String baseUrl = "https://" + core.getIndexUrl(); // 基础URL
-			String skey = (String) core.getLoginInfo().get(StorageLoginInfoEnum.skey.getKey());
-			if (text.equals("111")) {
-				LOG.info("开始下载好友头像");
-				List<JSONObject> friends = WechatTools.getContactList();
-				for (int i = 0; i < friends.size(); i++) {
-					JSONObject friend = friends.get(i);
-					String url = baseUrl + friend.getString("HeadImgUrl") + skey;
-					// String fileName = friend.getString("NickName");
-					String headPicPath = path + File.separator + i + ".jpg";
+    if (!msg.isGroupMsg()) { // 群消息不处理
+      String text = msg.getText(); // 发送文本消息，也可调用MessageTools.sendFileMsgByUserId(userId,text);
+      String baseUrl = "https://" + core.getIndexUrl(); // 基础URL
+      String skey = (String) core.getLoginInfo().get(StorageLoginInfoEnum.skey.getKey());
+      if (text.equals("111")) {
+        LOG.info("开始下载好友头像");
+        List<JSONObject> friends = WechatTools.getContactList();
+        for (int i = 0; i < friends.size(); i++) {
+          JSONObject friend = friends.get(i);
+          String url = baseUrl + friend.getString("HeadImgUrl") + skey;
+          // String fileName = friend.getString("NickName");
+          String headPicPath = path + File.separator + i + ".jpg";
 
-					HttpEntity entity = myHttpClient.doGet(url, null, true, null);
-					try {
-						OutputStream out = new FileOutputStream(headPicPath);
-						byte[] bytes = EntityUtils.toByteArray(entity);
-						out.write(bytes);
-						out.flush();
-						out.close();
+          HttpEntity entity = myHttpClient.doGet(url, null, true, null);
+          try {
+            OutputStream out = new FileOutputStream(headPicPath);
+            byte[] bytes = EntityUtils.toByteArray(entity);
+            out.write(bytes);
+            out.flush();
+            out.close();
 
-					} catch (Exception e) {
-						LOG.info(e.getMessage());
-					}
+          } catch (Exception e) {
+            LOG.info(e.getMessage());
+          }
 
-				}
-			}
-		}
-		return null;
-	}
+        }
+      }
+    }
+    return null;
+  }
 
-	@Override
-	public String picMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String picMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public String voiceMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String voiceMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public String viedoMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String viedoMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public String nameCardMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String nameCardMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public void sysMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
+  @Override
+  public void sysMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
 
-	}
+  }
 
-	public static void main(String[] args) {
-		String qrPath = "D://itchat4j//login"; // 保存登陆二维码图片的路径，这里需要在本地新建目录
-		IMsgHandlerFace msgHandler = new PicYourFriends(); // 实现IMsgHandlerFace接口的类
-		Wechat wechat = new Wechat(msgHandler, qrPath); // 【注入】
-		wechat.start(); // 启动服务，会在qrPath下生成一张二维码图片，扫描即可登陆，注意，二维码图片如果超过一定时间未扫描会过期，过期时会自动更新，所以你可能需要重新打开图片
-	}
+  public static void main(String[] args) {
+    String qrPath = "D://itchat4j//login"; // 保存登陆二维码图片的路径，这里需要在本地新建目录
+    IMsgHandlerFace msgHandler = new PicYourFriends(); // 实现IMsgHandlerFace接口的类
+    Wechat wechat = new Wechat(msgHandler, qrPath); // 【注入】
+    wechat.start(); // 启动服务，会在qrPath下生成一张二维码图片，扫描即可登陆，注意，二维码图片如果超过一定时间未扫描会过期，过期时会自动更新，所以你可能需要重新打开图片
+  }
 
-	@Override
-	public String verifyAddFriendMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String verifyAddFriendMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public String mediaMsgHandle(BaseMsg msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public String mediaMsgHandle(BaseMsg msg) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }
 
