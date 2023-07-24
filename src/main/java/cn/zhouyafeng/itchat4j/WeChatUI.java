@@ -121,7 +121,8 @@ public class WeChatUI extends Application {
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(10));
         root.setLeft(new VBox(searchField, friendListView));
-        root.setCenter(rightLayout);         // 创建场景并显示窗口
+        root.setCenter(rightLayout);
+        // 创建场景并显示窗口
         Scene scene = new Scene(root, 600, 400);
         primaryStage.setTitle("聊天");
         primaryStage.setScene(scene);
