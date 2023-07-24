@@ -1,8 +1,6 @@
 package cn.zhouyafeng.itchat4j;
 
 import cn.zhouyafeng.itchat4j.api.MessageTools;
-import cn.zhouyafeng.itchat4j.core.Core;
-import com.alibaba.fastjson.JSONObject;
 import javafx.application.Application;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
@@ -17,23 +15,22 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class WeChatUI extends Application {
     private ListView<String> friendListView;
     private TextArea chatArea;
     private TextField messageField;
     private String selectUser;
-
-    private TextField searchField; // 新增搜索文本框
-
-    private FilteredList<String> filteredFriendList; // 新增过滤后的好友列表
+    private TextField searchField;
+    private FilteredList<String> filteredFriendList;
 
     @Override
     public void start(Stage primaryStage) {
         MessageHolder messageHolder = new MessageHolder();
         FriendHolder friendHolder = new FriendHolder();
-        new Wechat(new WechatMessageHandler(messageHolder,friendHolder), "/Users/apple/resources").start();
+        new Wechat(new WechatMessageHandler(messageHolder, friendHolder), "/Users/apple/resources").start();
         friendHolder.init();
         List<String> nickNames = friendHolder.getNickList();
 
@@ -47,12 +44,12 @@ public class WeChatUI extends Application {
             if (userId != null) {
                 sendMessage(chatArea, messageHolder, userId);
             }
-        });         // 创建左侧好友列表
+        });
         friendListView = new ListView<>();
         friendListView.setPrefWidth(200);
         friendListView.getItems().addAll(nickNames);
         friendListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            // 选中好友后处理
+
             if (newValue != null) {
                 selectUser = newValue;
                 System.out.println("选中好友：" + newValue);
@@ -72,12 +69,12 @@ public class WeChatUI extends Application {
                     setGraphic(null);
                 } else {
                     setText(item);
-                    Font font = Font.font("Arial", FontWeight.BOLD, 14); // 指定字体样式
+                    Font font = Font.font("Arial", FontWeight.BOLD, 14);
                     setFont(font);
                 }
             }
         });
-        // 创建搜索文本框
+
         searchField = new TextField();
         searchField.setPromptText("搜索好友...");
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -100,19 +97,19 @@ public class WeChatUI extends Application {
         Button autoReplayButton = new Button("自动");
         autoReplayButton.setOnAction(event -> {
             String message = messageField.getText();
-            if(message!=null&&message.length()>0){
-                friendHolder.addAutoReplay(selectUser,message);
+            if (message != null && message.length() > 0) {
+                friendHolder.addAutoReplay(selectUser, message);
                 messageField.setText("");
             }
         });
 
         refresh(chatArea, messageHolder);
-        HBox inputBox = new HBox(messageField, sendButton,autoReplayButton);
+        HBox inputBox = new HBox(messageField, sendButton, autoReplayButton);
         inputBox.setAlignment(Pos.CENTER);
         VBox rightLayout = new VBox(chatArea, inputBox);
         rightLayout.setSpacing(10);
         VBox.setVgrow(chatArea, Priority.ALWAYS);
-        Font font = Font.font("Arial",12);
+        Font font = Font.font("Arial", 12);
         chatArea.setFont(font);
         messageField.setFont(font);
         searchField.setFont(font);
@@ -132,7 +129,7 @@ public class WeChatUI extends Application {
     private void filterFriendList(String keyword) {
         filteredFriendList.setPredicate(friend -> {
             if (keyword == null || keyword.isEmpty()) {
-                return true; // 没有关键字时显示所有好友
+                return true;
             }
             String lowercaseKeyword = keyword.toLowerCase();
             return friend.toLowerCase().contains(lowercaseKeyword);
@@ -155,10 +152,10 @@ public class WeChatUI extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
+                while (true) {
                     try {
                         if (selectUser != null) {
-                            refresh(area,messageHolder,selectUser);
+                            refresh(area, messageHolder, selectUser);
                         }
                         Thread.sleep(200);
                     } catch (Exception e) {
@@ -172,7 +169,7 @@ public class WeChatUI extends Application {
     private void refresh(TextArea area, MessageHolder messageHolder, String userName) {
         String message = messageHolder.getMessage(userName);
         area.setText(message);
-    }     // 其他方法和逻辑可以添加在这里
+    }
 
     public static void main(String[] args) {
         launch(args);

@@ -3,16 +3,14 @@ package cn.zhouyafeng.itchat4j;
 import cn.zhouyafeng.itchat4j.api.MessageTools;
 import cn.zhouyafeng.itchat4j.beans.BaseMsg;
 import cn.zhouyafeng.itchat4j.beans.RecommendInfo;
-import cn.zhouyafeng.itchat4j.core.Core;
 import cn.zhouyafeng.itchat4j.face.IMsgHandlerFace;
 import cn.zhouyafeng.itchat4j.utils.enums.MsgTypeEnum;
 import cn.zhouyafeng.itchat4j.utils.tools.DownloadTools;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 
 /**
  * @author: sean  * @Date 2023/7/24 10:39
