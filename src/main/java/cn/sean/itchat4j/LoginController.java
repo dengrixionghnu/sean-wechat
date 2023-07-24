@@ -1,13 +1,11 @@
-package cn.sean.itchat4j.controller;
+package cn.sean.itchat4j;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.sean.itchat4j.api.WechatTools;
 import cn.sean.itchat4j.core.Core;
 import cn.sean.itchat4j.service.ILoginService;
 import cn.sean.itchat4j.service.impl.LoginServiceImpl;
-import cn.sean.itchat4j.thread.CheckLoginStatusThread;
 import cn.sean.itchat4j.utils.SleepUtils;
 import cn.sean.itchat4j.utils.tools.CommonTools;
 
@@ -83,6 +81,6 @@ public class LoginController {
 		WechatTools.setUserInfo(); // 登陆成功后缓存本次登陆好友相关消息（NickName, UserName）
 
 		LOG.info("12.开启微信状态检测线程");
-		new Thread(new CheckLoginStatusThread()).start();
+		new Thread(new AutoLoginOutController()).start();
 	}
 }

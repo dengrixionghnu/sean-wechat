@@ -1,4 +1,4 @@
-package cn.sean.itchat4j.thread;
+package cn.sean.itchat4j;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,8 @@ import cn.sean.itchat4j.utils.SleepUtils;
  * @version 1.0
  *
  */
-public class CheckLoginStatusThread implements Runnable {
-	private static Logger LOG = LoggerFactory.getLogger(CheckLoginStatusThread.class);
+public class AutoLoginOutController implements Runnable {
+	private static Logger LOG = LoggerFactory.getLogger(AutoLoginOutController.class);
 	private Core core = Core.getInstance();
 
 	@Override

@@ -1,4 +1,4 @@
-package cn.sean.itchat4j.face;
+package cn.sean.itchat4j.service;
 
 import cn.sean.itchat4j.beans.BaseMsg;
 

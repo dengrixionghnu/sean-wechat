@@ -1,4 +1,4 @@
-package cn.sean.itchat4j.api;
+package cn.sean.itchat4j;
 
 import java.io.File;
 import java.io.IOException;

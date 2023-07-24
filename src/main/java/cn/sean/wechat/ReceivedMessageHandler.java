@@ -1,9 +1,9 @@
 package cn.sean.wechat;
 
-import cn.sean.itchat4j.api.MessageTools;
+import cn.sean.itchat4j.MessageTools;
 import cn.sean.itchat4j.beans.BaseMsg;
 import cn.sean.itchat4j.beans.RecommendInfo;
-import cn.sean.itchat4j.face.IMsgHandlerFace;
+import cn.sean.itchat4j.service.IMsgHandlerFace;
 import cn.sean.itchat4j.utils.enums.MsgTypeEnum;
 import cn.sean.itchat4j.utils.tools.DownloadTools;
 import org.apache.log4j.Logger;

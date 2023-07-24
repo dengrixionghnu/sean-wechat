@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 
-import cn.sean.itchat4j.api.MessageTools;
+import cn.sean.itchat4j.MessageTools;
 import cn.sean.itchat4j.utils.enums.MsgCodeEnum;
 import cn.sean.itchat4j.utils.enums.MsgTypeEnum;
 import cn.sean.itchat4j.utils.tools.CommonTools;
@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sean.itchat4j.beans.BaseMsg;
-import cn.sean.itchat4j.face.IMsgHandlerFace;
+import cn.sean.itchat4j.service.IMsgHandlerFace;
 
 /**
  * 消息处理中心

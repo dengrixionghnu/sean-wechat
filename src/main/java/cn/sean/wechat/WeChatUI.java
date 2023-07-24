@@ -1,7 +1,7 @@
 package cn.sean.wechat;
 
 import cn.sean.itchat4j.Wechat;
-import cn.sean.itchat4j.api.MessageTools;
+import cn.sean.itchat4j.MessageTools;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.transformation.FilteredList;

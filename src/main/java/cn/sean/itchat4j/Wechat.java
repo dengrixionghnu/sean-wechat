@@ -3,9 +3,8 @@ package cn.sean.itchat4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.sean.itchat4j.controller.LoginController;
 import cn.sean.itchat4j.core.MsgCenter;
-import cn.sean.itchat4j.face.IMsgHandlerFace;
+import cn.sean.itchat4j.service.IMsgHandlerFace;
 
 public class Wechat {
 	private static final Logger LOG = LoggerFactory.getLogger(Wechat.class);
