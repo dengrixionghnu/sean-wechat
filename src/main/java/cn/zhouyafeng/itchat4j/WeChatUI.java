@@ -97,7 +97,7 @@ public class WeChatUI extends Application {
             }
         });
 
-        Button autoReplayButton = new Button("自动回复");
+        Button autoReplayButton = new Button("自动");
         autoReplayButton.setOnAction(event -> {
             String message = messageField.getText();
             if(message!=null&&message.length()>0){
@@ -123,7 +123,7 @@ public class WeChatUI extends Application {
         root.setLeft(new VBox(searchField, friendListView));
         root.setCenter(rightLayout);         // 创建场景并显示窗口
         Scene scene = new Scene(root, 600, 400);
-        primaryStage.setTitle("微信网页版");
+        primaryStage.setTitle("聊天");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
