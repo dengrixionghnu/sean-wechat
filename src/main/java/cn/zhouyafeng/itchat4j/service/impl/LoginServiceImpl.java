@@ -59,6 +59,8 @@ public class LoginServiceImpl implements ILoginService {
 
 	private MyHttpClient myHttpClient = core.getMyHttpClient();
 
+	private volatile Map<String, String> status = new HashMap<>();
+
 	public LoginServiceImpl() {
 
 	}
@@ -221,6 +223,7 @@ public class LoginServiceImpl implements ILoginService {
 		return true;
 	}
 
+
 	@Override
 	public void wxStatusNotify() {
 		// 组装请求URL和参数
@@ -243,9 +246,27 @@ public class LoginServiceImpl implements ILoginService {
 
 	}
 
+	private void checkStatus(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true){
+					try{
+						status = syncCheck();
+						if(status!=null && status.size()!=0){
+							Thread.sleep(2000);
+						}
+					}catch (Exception e){
+
+					}
+				}
+			}
+		}).start();
+	}
 	@Override
 	public void startReceiving() {
 		core.setAlive(true);
+		checkStatus();
 		new Thread(new Runnable() {
 			int retryCount = 0;
 
@@ -253,8 +274,10 @@ public class LoginServiceImpl implements ILoginService {
 			public void run() {
 				while (core.isAlive()) {
 					try {
-						Map<String, String> resultMap = syncCheck();
-						LOG.info(JSONObject.toJSONString(resultMap));
+						if(status==null||status.isEmpty()){
+							Thread.sleep(1000);
+						}
+						Map<String, String> resultMap = status;
 						String retcode = resultMap.get("retcode");
 						String selector = resultMap.get("selector");
 						if (retcode.equals(RetCodeEnum.UNKOWN.getCode())) {
@@ -317,14 +340,10 @@ public class LoginServiceImpl implements ILoginService {
 					} catch (Exception e) {
 						LOG.info(e.getMessage());
 						retryCount += 1;
-						if (core.getReceivingRetryCount() < retryCount) {
-							core.setAlive(false);
-						} else {
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e1) {
-								LOG.info(e.getMessage());
-							}
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e1) {
+							LOG.info(e.getMessage());
 						}
 					}
 
@@ -454,7 +473,7 @@ public class LoginServiceImpl implements ILoginService {
 	 *
 	 * @author https://github.com/yaphone
 	 * @date 2017年4月9日 下午12:16:26
-	 * @param result
+	 * @param
 	 */
 	private void processLoginInfo(String loginContent) {
 		String regEx = "window.redirect_uri=\"(\\S+)\";";
@@ -648,7 +667,6 @@ public class LoginServiceImpl implements ILoginService {
 		params.add(new BasicNameValuePair("r", String.valueOf(new Date().getTime())));
 		params.add(new BasicNameValuePair("synckey", (String) core.getLoginInfo().get("synckey")));
 		params.add(new BasicNameValuePair("_", String.valueOf(new Date().getTime())));
-		SleepUtils.sleep(7);
 		try {
 			HttpEntity entity = myHttpClient.doGet(url, params, true, null);
 			if (entity == null) {

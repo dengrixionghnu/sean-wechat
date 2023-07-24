@@ -164,7 +164,7 @@ public class MsgCenter {
 				core.getMsgList().remove(0);
 			}
 			try {
-				TimeUnit.MILLISECONDS.sleep(1000);
+				TimeUnit.MILLISECONDS.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

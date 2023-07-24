@@ -18,32 +18,30 @@ import java.util.*;
  * @author: sean  * @Date 2023/7/24 10:39
  */
 public class WechatMessageHandler implements IMsgHandlerFace {
-    Logger LOG = Logger.getLogger(SimpleDemo.class);
+    Logger LOG = Logger.getLogger(WechatMessageHandler.class);
     private MessageHolder messageHolder;
-    private Map<String, String> userIdNickNameMap;
+    private FriendHolder friendHolder;
 
-    public WechatMessageHandler(MessageHolder messageHolder) {
+    public WechatMessageHandler(MessageHolder messageHolder,FriendHolder friendHolder) {
+        this.friendHolder= friendHolder;
         this.messageHolder = messageHolder;
-    }
-
-    private void setUserIdNickNameMap() {
-        userIdNickNameMap = new HashMap<>();
-        List<JSONObject> contacts = Core.getInstance().getContactList();
-        for (JSONObject contact : contacts) {
-            userIdNickNameMap.put(contact.getString("UserName"), contact.getString("NickName"));
-        }
     }
 
     @Override
     public String textMsgHandle(BaseMsg msg) {         // String docFilePath = "D:/itchat4j/pic/1.jpg"; // 这里是需要发送的文件的路径
         if (!msg.isGroupMsg()) { // 群消息不处理
-            if (Objects.isNull(userIdNickNameMap) || userIdNickNameMap.isEmpty()) {
-                setUserIdNickNameMap();
-            }
             String userId = msg.getFromUserName();
-            String userName = userIdNickNameMap.get(userId);
+            String userName = friendHolder.getNick(userId);
+            if(userName==null){
+                return null;
+            }
             String text = userName + ":" + msg.getText();
-            messageHolder.addMessage(userId, text);
+            messageHolder.addMessage(userName, text);
+            if(friendHolder.contain(userName)){
+                String autoMessage = friendHolder.getAutoReplay(userName);
+                messageHolder.addMessage(userName,"我:"+autoMessage);
+                return autoMessage;
+            }
         }
         return null;
     }

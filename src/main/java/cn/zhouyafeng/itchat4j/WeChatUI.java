@@ -32,21 +32,18 @@ public class WeChatUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         MessageHolder messageHolder = new MessageHolder();
-        new Wechat(new WechatMessageHandler(messageHolder), "/Users/apple/resources").start();
-        List<JSONObject> contacts = Core.getInstance().getContactList();
-        Map<String, String> contactNickNameMap = new HashMap<>();
-        List<String> nickNames = new ArrayList<>();
-        for (JSONObject contact : contacts) {
-            contactNickNameMap.put(contact.getString("NickName"), contact.getString("UserName"));
-            nickNames.add(contact.getString("NickName"));
-        }
+        FriendHolder friendHolder = new FriendHolder();
+        new Wechat(new WechatMessageHandler(messageHolder,friendHolder), "/Users/apple/resources").start();
+        friendHolder.init();
+        List<String> nickNames = friendHolder.getNickList();
+
         Collections.sort(nickNames);         // 创建右侧聊天界面
         chatArea = new TextArea();
         chatArea.setEditable(false);
         messageField = new TextField();
         messageField.setPromptText("输入消息...");
         messageField.setOnAction(event -> {
-            String userId = contactNickNameMap.get(selectUser);
+            String userId = friendHolder.getUserId(selectUser);
             if (userId != null) {
                 sendMessage(chatArea, messageHolder, userId);
             }
@@ -59,9 +56,9 @@ public class WeChatUI extends Application {
             if (newValue != null) {
                 selectUser = newValue;
                 System.out.println("选中好友：" + newValue);
-                String userId = contactNickNameMap.get(selectUser);
+                String userId = friendHolder.getUserId(selectUser);
                 if (userId != null) {
-                    refresh(chatArea, messageHolder, userId);
+                    refresh(chatArea, messageHolder, selectUser);
                 }
             }
         });
@@ -94,13 +91,23 @@ public class WeChatUI extends Application {
 
         Button sendButton = new Button("发送");
         sendButton.setOnAction(event -> {
-            String userId = contactNickNameMap.get(selectUser);
+            String userId = friendHolder.getUserId(selectUser);
             if (userId != null) {
                 sendMessage(chatArea, messageHolder, userId);
             }
         });
-        refresh(chatArea, messageHolder, contactNickNameMap);
-        HBox inputBox = new HBox(messageField, sendButton);
+
+        Button autoReplayButton = new Button("自动回复");
+        autoReplayButton.setOnAction(event -> {
+            String message = messageField.getText();
+            if(message!=null&&message.length()>0){
+                friendHolder.addAutoReplay(selectUser,message);
+                messageField.setText("");
+            }
+        });
+
+        refresh(chatArea, messageHolder);
+        HBox inputBox = new HBox(messageField, sendButton,autoReplayButton);
         inputBox.setAlignment(Pos.CENTER);
         VBox rightLayout = new VBox(chatArea, inputBox);
         rightLayout.setSpacing(10);
@@ -136,33 +143,33 @@ public class WeChatUI extends Application {
         if (!message.isEmpty()) {
             MessageTools.sendMsgById(message, userId);
             String messageMe = "我:" + message;
-            messageHolder.addMessage(userId, messageMe);
-            refresh(area, messageHolder, userId);
+            messageHolder.addMessage(selectUser, messageMe);
+            refresh(area, messageHolder, selectUser);
             messageField.clear();
         }
     }
 
-    private void refresh(TextArea area, MessageHolder
-            messageHolder, Map<String, String> contactNickNameMap) {
+
+    private void refresh(TextArea area, MessageHolder messageHolder) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    if (selectUser != null) {
-                        String userId = contactNickNameMap.get(selectUser);
-                        if (userId != null) {
-                            sendMessage(chatArea, messageHolder, userId);
+                while (true){
+                    try {
+                        if (selectUser != null) {
+                            refresh(area,messageHolder,selectUser);
                         }
+                        Thread.sleep(200);
+                    } catch (Exception e) {
                     }
-                    Thread.sleep(200);
-                } catch (Exception e) {
+
                 }
             }
         }).start();
     }
 
-    private void refresh(TextArea area, MessageHolder messageHolder, String userId) {
-        String message = messageHolder.getMessage(userId);
+    private void refresh(TextArea area, MessageHolder messageHolder, String userName) {
+        String message = messageHolder.getMessage(userName);
         area.setText(message);
     }     // 其他方法和逻辑可以添加在这里
 
