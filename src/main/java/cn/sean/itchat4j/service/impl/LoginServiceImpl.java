@@ -1,30 +1,5 @@
 package cn.sean.itchat4j.service.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.regex.Matcher;
-
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 import cn.sean.itchat4j.beans.BaseMsg;
 import cn.sean.itchat4j.core.Core;
 import cn.sean.itchat4j.core.MsgCenter;
@@ -40,6 +15,24 @@ import cn.sean.itchat4j.utils.enums.parameters.LoginParaEnum;
 import cn.sean.itchat4j.utils.enums.parameters.StatusNotifyParaEnum;
 import cn.sean.itchat4j.utils.enums.parameters.UUIDParaEnum;
 import cn.sean.itchat4j.utils.tools.CommonTools;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.BlockingQueue;
+import java.util.regex.Matcher;
 
 /**
  * 登陆服务实现类
@@ -58,9 +51,13 @@ public class LoginServiceImpl implements ILoginService {
 
     private volatile Map<String, String> status = new HashMap<>();
 
-    public LoginServiceImpl() {
+    private BlockingQueue<String> contactRefresh;
 
+    public LoginServiceImpl(BlockingQueue<String> contactRefresh) {
+        this.contactRefresh = contactRefresh;
     }
+
+
 
     @Override
     public boolean login() {
@@ -77,7 +74,7 @@ public class LoginServiceImpl implements ILoginService {
             // SleepUtils.sleep(time += 1000);
             long millis = System.currentTimeMillis();
             params.add(new BasicNameValuePair(LoginParaEnum.R.para(), String.valueOf(millis / 1579L)));
-            params.add(new BasicNameValuePair(LoginParaEnum._.para(), String.valueOf(millis)));
+            params.add(new BasicNameValuePair(LoginParaEnum.R_.para(), String.valueOf(millis)));
             HttpEntity entity = httpClient.doGet(URLEnum.LOGIN_URL.getUrl(), params, true, null);
 
             try {
@@ -110,7 +107,7 @@ public class LoginServiceImpl implements ILoginService {
                 UUIDParaEnum.REDIRECT_URL.value()));
         params.add(new BasicNameValuePair(UUIDParaEnum.FUN.para(), UUIDParaEnum.FUN.value()));
         params.add(new BasicNameValuePair(UUIDParaEnum.LANG.para(), UUIDParaEnum.LANG.value()));
-        params.add(new BasicNameValuePair(UUIDParaEnum._.para(), String.valueOf(System.currentTimeMillis())));
+        params.add(new BasicNameValuePair(UUIDParaEnum.R_.para(), String.valueOf(System.currentTimeMillis())));
 
         HttpEntity entity = httpClient.doGet(URLEnum.UUID_URL.getUrl(), params, true, null);
 
@@ -190,7 +187,9 @@ public class LoginServiceImpl implements ILoginService {
             String synckey = sb.toString();
 
             // 1_661706053|2_661706420|3_661706415|1000_1494151022
-            core.getLoginInfo().put(StorageLoginInfoEnum.synckey.getKey(), synckey.substring(0, synckey.length() - 1));// 1_656161336|2_656161626|3_656161313|11_656159955|13_656120033|201_1492273724|1000_1492265953|1001_1492250432|1004_1491805192
+            core.getLoginInfo().put(StorageLoginInfoEnum.synckey.getKey(),
+                    synckey.substring(0, synckey.length() - 1));// 1_656161336|2_656161626|3_656161313|11_656159955
+            // |13_656120033|201_1492273724|1000_1492265953|1001_1492250432|1004_1491805192
             core.setUserName(user.getString("UserName"));
             core.setNickName(user.getString("NickName"));
             core.setUserSelf(obj.getJSONObject("User"));
@@ -249,14 +248,14 @@ public class LoginServiceImpl implements ILoginService {
             public void run() {
                 while (true) {
                     try {
+                        LOG.info("checkStatus。。。。。。");
                         status = syncCheck();
                         if (status != null && status.size() != 0) {
                             String retcode = status.get("retcode");
                             if (retcode.equals(RetCodeEnum.UNKOWN.getCode())) {
-                                LOG.info(RetCodeEnum.UNKOWN.getType());
                                 continue;
                             }
-                            Thread.sleep(2000);
+                            Thread.sleep(1000 * 60);
                         }
                     } catch (Exception e) {
 
@@ -278,7 +277,7 @@ public class LoginServiceImpl implements ILoginService {
                 while (core.isAlive()) {
                     try {
                         if (status == null || status.isEmpty()) {
-                            Thread.sleep(1000);
+                            continue;
                         }
                         Map<String, String> resultMap = status;
                         String retcode = resultMap.get("retcode");
@@ -324,7 +323,8 @@ public class LoginServiceImpl implements ILoginService {
                                     try {
                                         JSONArray msgList = new JSONArray();
                                         msgList = msgObj.getJSONArray("AddMsgList");
-                                        JSONArray modContactList = msgObj.getJSONArray("ModContactList"); // 存在删除或者新增的好友信息
+                                        JSONArray modContactList = msgObj.getJSONArray("ModContactList"); //
+                                        // 存在删除或者新增的好友信息
                                         msgList = MsgCenter.produceMsg(msgList);
                                         for (int j = 0; j < msgList.size(); j++) {
                                             JSONObject userInfo = modContactList.getJSONObject(j);
@@ -358,30 +358,31 @@ public class LoginServiceImpl implements ILoginService {
 
     @Override
     public void webWxGetContact() {
-        getWxContact();
+        getContact();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
+                while (true) {
                     try {
-                        Thread.sleep(30*1000);
-                        getWxContact();
+                        String refresh = contactRefresh.take();
+                        getContact();
+                    } catch (Exception e) {
 
-                    }catch (Exception e){
 
                     }
                 }
             }
         }).start();
+
     }
 
-    private void getWxContact() {
-
+    private void getContact() {
         try {
             String url = String.format(URLEnum.WEB_WX_GET_CONTACT.getUrl(),
                     core.getLoginInfo().get(StorageLoginInfoEnum.url.getKey()));
             Map<String, Object> paramMap = core.getParamMap();
             HttpEntity entity = httpClient.doPost(url, JSON.toJSONString(paramMap));
+
 
             String result = EntityUtils.toString(entity, Consts.UTF_8);
             JSONObject fullFriendsJsonList = JSON.parseObject(result);
@@ -394,7 +395,8 @@ public class LoginServiceImpl implements ILoginService {
                 currentTime = new Date().getTime();
             }
             core.setMemberCount(fullFriendsJsonList.getInteger(StorageLoginInfoEnum.MemberCount.getKey()));
-            JSONArray member = fullFriendsJsonList.getJSONArray(StorageLoginInfoEnum.MemberList.getKey());
+            JSONArray member =
+                    fullFriendsJsonList.getJSONArray(StorageLoginInfoEnum.MemberList.getKey());
             // 循环获取seq直到为0，即获取全部好友列表 ==0：好友获取完毕 >0：好友未获取完毕，此时seq为已获取的字节数
             while (seq > 0) {
                 // 设置seq传参
@@ -425,16 +427,15 @@ public class LoginServiceImpl implements ILoginService {
                 } else if (Config.API_SPECIAL_USER.contains(o.getString("UserName"))) { // 特殊账号
                     //core.getSpecialUsersList().add(o);
                 } else if (o.getString("UserName").indexOf("@@") != -1) { // 群聊
-                    if (!core.getGroupIdList().contains(o.getString("UserName"))) {
-                        //	core.getGroupNickNameList().add(o.getString("NickName"));
-                        //	core.getGroupIdList().add(o.getString("UserName"));
-                        //	core.getGroupList().add(o);
-                    }
+//									if (!core.getGroupIdList().contains(o.getString("UserName"))) {
+//										core.getGroupNickNameList().add(o.getString("NickName"));
+//										core.getGroupIdList().add(o.getString("UserName"));
+//										core.getGroupList().add(o);
+//									}
                 } else if (o.getString("UserName").equals(core.getUserSelf().getString("UserName"))) { // 自己
                     //core.getContactList().remove(o);
                 } else { // 普通联系人
                     contacts.add(o);
-                    core.getContactList().add(o);
                 }
             }
             core.getContactList().clear();
@@ -527,7 +528,8 @@ public class LoginServiceImpl implements ILoginService {
                 core.getLoginInfo().put("fileUrl", url);
                 core.getLoginInfo().put("syncUrl", url);
             }
-            core.getLoginInfo().put("deviceid", "e" + String.valueOf(new Random().nextLong()).substring(1, 16)); // 生成15位随机数
+            core.getLoginInfo().put("deviceid", "e" + String.valueOf(new Random().nextLong()).substring(1, 16)); //
+            // 生成15位随机数
             core.getLoginInfo().put("BaseRequest", new ArrayList<String>());
             String text = "";
 
@@ -662,7 +664,8 @@ public class LoginServiceImpl implements ILoginService {
                 }
                 String synckey = sb.toString();
                 core.getLoginInfo().put(StorageLoginInfoEnum.synckey.getKey(),
-                        synckey.substring(0, synckey.length() - 1));// 1_656161336|2_656161626|3_656161313|11_656159955|13_656120033|201_1492273724|1000_1492265953|1001_1492250432|1004_1491805192
+                        synckey.substring(0, synckey.length() - 1));// 1_656161336|2_656161626|3_656161313
+                // |11_656159955|13_656120033|201_1492273724|1000_1492265953|1001_1492250432|1004_1491805192
             }
         } catch (Exception e) {
             LOG.info(e.getMessage());
