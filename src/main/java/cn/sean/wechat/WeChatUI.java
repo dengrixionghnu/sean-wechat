@@ -36,13 +36,15 @@ public class WeChatUI extends Application {
 
     private BlockingQueue<String> requestFocus = new ArrayBlockingQueue<>(100000);
 
+    private BlockingQueue<String> contactRefresh = new ArrayBlockingQueue<>(100000);
+
+
     @Override
     public void start(Stage primaryStage) {
         MessageCache messageCache = new MessageCache();
-        FriendRefreshable friendRefreshable = new FriendRefreshable();
-        new Wechat(new ReceivedMessageHandler(messageCache, friendRefreshable,requestFocus), "/Users/apple/resources").start();
-        friendRefreshable.init();
-
+        FriendRefreshable friendRefreshable = new FriendRefreshable(contactRefresh);
+        new Wechat(new ReceivedMessageHandler(messageCache, friendRefreshable,requestFocus), "D:/wechat",
+                contactRefresh).start();
         List<String> nickNames = new ArrayList<>();
         nickNames.addAll(topContact);
         List<String> temp = friendRefreshable.getNickList();
@@ -54,7 +56,7 @@ public class WeChatUI extends Application {
         messageField = new TextField();
         messageField.setPromptText("输入消息...");
         messageField.setOnAction(event -> {
-            String userId = friendRefreshable.getUserId(selectUser);
+            String userId = friendRefreshable.getUserId(selectUser,0);
             if (userId != null) {
                 sendMessage(chatArea, messageCache, userId);
             }
@@ -67,7 +69,7 @@ public class WeChatUI extends Application {
             if (newValue != null) {
                 selectUser = newValue;
                 System.out.println("选中好友：" + newValue);
-                String userId = friendRefreshable.getUserId(selectUser);
+                String userId = friendRefreshable.getUserId(selectUser,0);
                 if (userId != null) {
                     refresh(chatArea, messageCache, selectUser);
                 }
@@ -102,7 +104,7 @@ public class WeChatUI extends Application {
 
         Button sendButton = new Button("发送");
         sendButton.setOnAction(event -> {
-            String userId = friendRefreshable.getUserId(selectUser);
+            String userId = friendRefreshable.getUserId(selectUser,0);
             if (userId != null) {
                 sendMessage(chatArea, messageCache, userId);
             }
@@ -112,13 +114,18 @@ public class WeChatUI extends Application {
         autoReplayButton.setOnAction(event -> {
             String message = messageField.getText();
             if (message != null && message.length() > 0) {
-                friendRefreshable.addAutoReplay(selectUser, message);
+                if("remove".equals(message)){
+                    friendRefreshable.removeAutoReplay(selectUser);
+                }else{
+                    friendRefreshable.addAutoReplay(selectUser, message);
+                }
                 messageField.setText("");
             }
         });
 
         refresh(chatArea, messageCache);
         handlerFocusRequest(primaryStage);
+
         HBox inputBox = new HBox(messageField, sendButton, autoReplayButton);
         inputBox.setAlignment(Pos.CENTER);
         VBox rightLayout = new VBox(chatArea, inputBox);
@@ -204,8 +211,9 @@ public class WeChatUI extends Application {
     private void refresh(TextArea area, MessageCache messageCache, String userName) {
         String message = messageCache.getMessage(userName);
         area.setText(message);
-        area.selectPositionCaret(area.getLength());
-        area.deselect();
+//        area.selectEnd();
+//        area.deselect();
+//        area.setScrollTop(Double.MAX_VALUE);
     }
 
     public static void main(String[] args) {
