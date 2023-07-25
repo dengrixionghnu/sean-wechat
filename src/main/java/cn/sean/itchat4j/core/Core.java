@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import cn.sean.itchat4j.utils.MyHttpClient;
 import cn.sean.itchat4j.utils.enums.parameters.BaseParaEnum;
@@ -23,6 +25,7 @@ import cn.sean.itchat4j.beans.BaseMsg;
 public class Core {
 
 	private static Core instance;
+
 
 	private Core() {
 
@@ -44,7 +47,7 @@ public class Core {
 
 	private String userName;
 	private String nickName;
-	private List<BaseMsg> msgList = new ArrayList<BaseMsg>();
+	private BlockingQueue<BaseMsg> msgList = new ArrayBlockingQueue<>(100000);
 
 	private JSONObject userSelf; // 登陆账号自身信息
 	private List<JSONObject> memberList = new ArrayList<JSONObject>(); // 好友+群聊+公众号+特殊账号
@@ -157,13 +160,10 @@ public class Core {
 		return myHttpClient;
 	}
 
-	public List<BaseMsg> getMsgList() {
+	public BlockingQueue<BaseMsg> getMsgList() {
 		return msgList;
 	}
 
-	public void setMsgList(List<BaseMsg> msgList) {
-		this.msgList = msgList;
-	}
 
 	public void setMyHttpClient(MyHttpClient myHttpClient) {
 		this.myHttpClient = myHttpClient;

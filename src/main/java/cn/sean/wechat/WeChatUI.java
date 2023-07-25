@@ -39,11 +39,14 @@ public class WeChatUI extends Application {
     private BlockingQueue<String> contactRefresh = new ArrayBlockingQueue<>(100000);
 
 
+    private BlockingQueue<String> txtAreRefresh = new ArrayBlockingQueue<>(100000);
+
     @Override
     public void start(Stage primaryStage) {
         MessageCache messageCache = new MessageCache();
+        messageCache.init();
         FriendRefreshable friendRefreshable = new FriendRefreshable(contactRefresh);
-        new Wechat(new ReceivedMessageHandler(messageCache, friendRefreshable,requestFocus), "D:/wechat",
+        new Wechat(new ReceivedMessageHandler(messageCache, friendRefreshable,requestFocus,txtAreRefresh), "/Users/apple/resources",
                 contactRefresh).start();
         List<String> nickNames = new ArrayList<>();
         nickNames.addAll(topContact);
@@ -196,10 +199,10 @@ public class WeChatUI extends Application {
             public void run() {
                 while (true) {
                     try {
+                        txtAreRefresh.take();
                         if (selectUser != null) {
                             refresh(area, messageCache, selectUser);
                         }
-                        Thread.sleep(200);
                     } catch (Exception e) {
                     }
 
@@ -211,9 +214,9 @@ public class WeChatUI extends Application {
     private void refresh(TextArea area, MessageCache messageCache, String userName) {
         String message = messageCache.getMessage(userName);
         area.setText(message);
-//        area.selectEnd();
-//        area.deselect();
-//        area.setScrollTop(Double.MAX_VALUE);
+        area.selectEnd();
+        area.deselect();
+        area.setScrollTop(Double.MAX_VALUE);
     }
 
     public static void main(String[] args) {

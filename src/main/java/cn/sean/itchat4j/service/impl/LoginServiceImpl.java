@@ -274,6 +274,7 @@ public class LoginServiceImpl implements ILoginService {
 
             @Override
             public void run() {
+                long requestTime = System.currentTimeMillis();
                 while (core.isAlive()) {
                     try {
                         if (status == null || status.isEmpty()) {
@@ -295,7 +296,7 @@ public class LoginServiceImpl implements ILoginService {
                             LOG.info(RetCodeEnum.MOBILE_LOGIN_OUT.getType());
                             break;
                         } else if (retcode.equals(RetCodeEnum.NORMAL.getCode())) {
-                            core.setLastNormalRetcodeTime(System.currentTimeMillis()); // 最后收到正常报文时间
+                            core.setLastNormalRetcodeTime(requestTime); // 最后收到正常报文时间
                             JSONObject msgObj = webWxSync();
                             if (selector.equals("2")) {
                                 if (msgObj != null) {
@@ -306,17 +307,22 @@ public class LoginServiceImpl implements ILoginService {
                                         for (int j = 0; j < msgList.size(); j++) {
                                             BaseMsg baseMsg = JSON.toJavaObject(msgList.getJSONObject(j),
                                                     BaseMsg.class);
-                                            core.getMsgList().add(baseMsg);
+                                            core.getMsgList().put(baseMsg);
                                         }
                                     } catch (Exception e) {
                                         LOG.info(e.getMessage());
                                     }
                                 }
+                                requestTime = System.currentTimeMillis();
+                            } else if (selector.equals("0")) {
+
                             } else if (selector.equals("7")) {
                                 webWxSync();
                             } else if (selector.equals("4")) {
+                                requestTime = System.currentTimeMillis();
                                 continue;
                             } else if (selector.equals("3")) {
+                                requestTime = System.currentTimeMillis();
                                 continue;
                             } else if (selector.equals("6")) {
                                 if (msgObj != null) {
@@ -335,7 +341,7 @@ public class LoginServiceImpl implements ILoginService {
                                         LOG.info(e.getMessage());
                                     }
                                 }
-
+                                requestTime = System.currentTimeMillis();
                             }
                         } else {
                             JSONObject obj = webWxSync();

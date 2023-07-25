@@ -23,12 +23,16 @@ public class ReceivedMessageHandler implements IMsgHandlerFace {
 
     private BlockingQueue<String> requestFocus;
 
+    private BlockingQueue<String> txtAreRefresh;
+
     public ReceivedMessageHandler(MessageCache messageCache, FriendRefreshable friendRefreshable,
-                                  BlockingQueue<String> requestFocus
+                                  BlockingQueue<String> requestFocus,
+                                  BlockingQueue<String> txtAreRefresh
     ) {
         this.friendRefreshable = friendRefreshable;
         this.messageCache = messageCache;
         this.requestFocus = requestFocus;
+        this.txtAreRefresh = txtAreRefresh;
     }
 
     @Override
@@ -47,6 +51,12 @@ public class ReceivedMessageHandler implements IMsgHandlerFace {
                 messageCache.addMessage(userName, "我:" + autoMessage);
                 return autoMessage;
             }
+            try{
+                txtAreRefresh.put("refersh");
+            }catch (Exception e){
+
+            }
+
             requestFocus();
         }
         return null;

@@ -15,21 +15,24 @@ public class MessageCache {
     private List<String> autoSyncNames = Arrays.asList("唐智敏");
 
 
+
+    public void init(){
+        for(String name:autoSyncNames){
+            StringBuilder autoMessageBuilder = new StringBuilder();
+            SyncToFileUtil sync = new SyncToFileUtil(autoMessageBuilder, "/Users/apple/resources/wechat/" + name + ".txt");
+            sync.startSync();
+            autoSyncMessage.put(name,autoMessageBuilder);
+            autoSyncMap.put(name,sync);
+        }
+    }
+
     public void addMessage(String userId, String message) {
         StringBuilder builder = messageMap.get(userId);
         if (Objects.isNull(builder)) {
             builder = new StringBuilder();
             messageMap.put(userId, builder);
             if(autoSyncNames.contains(userId)){
-                StringBuilder autoMessageBuilder = null;
-                if(!autoSyncMessage.containsKey(userId)){
-                    autoMessageBuilder = new StringBuilder();
-                    autoSyncMessage.put(userId,autoMessageBuilder);
-                    autoMessageBuilder.append(message + "\n");
-                    SyncToFileUtil sync = new SyncToFileUtil(autoMessageBuilder, "D:\\wechat\\message/" + userId + ".txt");
-                    sync.startSync();
-                    autoSyncMap.put(userId,sync);
-                }
+                autoSyncMessage.get(userId).append(message + "\n");
             }
         }
         builder.append(message + "\n");
