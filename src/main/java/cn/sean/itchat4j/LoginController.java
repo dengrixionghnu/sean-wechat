@@ -9,6 +9,8 @@ import cn.sean.itchat4j.service.impl.LoginServiceImpl;
 import cn.sean.itchat4j.utils.SleepUtils;
 import cn.sean.itchat4j.utils.tools.CommonTools;
 
+import java.util.concurrent.BlockingQueue;
+
 /**
  * 登陆控制器
  * 
@@ -19,8 +21,13 @@ import cn.sean.itchat4j.utils.tools.CommonTools;
  */
 public class LoginController {
 	private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
-	private ILoginService loginService = new LoginServiceImpl();
+	private ILoginService loginService;
 	private static Core core = Core.getInstance();
+
+
+	public LoginController(BlockingQueue<String> contactRefresh) {
+		loginService = new LoginServiceImpl(contactRefresh);
+	}
 
 	public void login(String qrPath) {
 		if (core.isAlive()) { // 已登陆

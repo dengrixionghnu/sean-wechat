@@ -6,16 +6,18 @@ import org.slf4j.LoggerFactory;
 import cn.sean.itchat4j.core.MsgCenter;
 import cn.sean.itchat4j.service.IMsgHandlerFace;
 
+import java.util.concurrent.BlockingQueue;
+
 public class Wechat {
 	private static final Logger LOG = LoggerFactory.getLogger(Wechat.class);
 	private IMsgHandlerFace msgHandler;
 
-	public Wechat(IMsgHandlerFace msgHandler, String qrPath) {
+	public Wechat(IMsgHandlerFace msgHandler, String qrPath, BlockingQueue<String> contactRefresh) {
 		System.setProperty("jsse.enableSNIExtension", "false"); // 防止SSL错误
 		this.msgHandler = msgHandler;
 
 		// 登陆
-		LoginController login = new LoginController();
+		LoginController login = new LoginController(contactRefresh);
 		login.login(qrPath);
 	}
 
