@@ -204,6 +204,8 @@ public class WeChatUI extends Application {
     private void refresh(TextArea area, MessageCache messageCache, String userName) {
         String message = messageCache.getMessage(userName);
         area.setText(message);
+        area.selectPositionCaret(area.getLength());
+        area.deselect();
     }
 
     public static void main(String[] args) {

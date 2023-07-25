@@ -34,7 +34,7 @@ public class FriendRefreshable {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10*1000);
                     refresh();
                 }catch (Exception e){
 
