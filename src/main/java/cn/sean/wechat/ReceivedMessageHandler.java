@@ -36,20 +36,27 @@ public class ReceivedMessageHandler implements IMsgHandlerFace {
     }
 
     @Override
-    public String textMsgHandle(BaseMsg msg) {         // String docFilePath = "D:/itchat4j/pic/1.jpg"; // 这里是需要发送的文件的路径
+    public String textMsgHandle(BaseMsg msg) {
+        String returnValue = null;
         if (!msg.isGroupMsg()) { // 群消息不处理
             String userId = msg.getFromUserName();
             String userName = friendRefreshable.getNick(userId,1);
+            boolean isSelfSend = false;
             if (userName == null) {
-                return null;
+                String sendId = msg.getToUserName();
+                userName = friendRefreshable.getNick(sendId,1);
+                isSelfSend=true;
             }
-            String text = userName + ":" + msg.getText();
+            if (userName == null) {
+                return returnValue;
+            }
+            String text = (isSelfSend?"我":userName) + ":" + msg.getText();
             System.out.println("ReceivedMessageHandler:"+userName+":"+msg.getText());
             messageCache.addMessage(userName, text);
             if (friendRefreshable.contain(userName)) {
                 String autoMessage = friendRefreshable.getAutoReplay(userName);
                 messageCache.addMessage(userName, "我:" + autoMessage);
-                return autoMessage;
+                returnValue = autoMessage;
             }
             try{
                 txtAreRefresh.put("refersh");
@@ -59,7 +66,7 @@ public class ReceivedMessageHandler implements IMsgHandlerFace {
 
             requestFocus();
         }
-        return null;
+        return returnValue;
     }
 
     private void requestFocus(){
@@ -71,29 +78,115 @@ public class ReceivedMessageHandler implements IMsgHandlerFace {
 
     @Override
     public String picMsgHandle(BaseMsg msg) {
+        String returnValue = null;
+        if (!msg.isGroupMsg()) { // 群消息不处理
+            String userId = msg.getFromUserName();
+            String userName = friendRefreshable.getNick(userId,1);
+            boolean isSelfSend = false;
+            if (userName == null) {
+                String sendId = msg.getToUserName();
+                userName = friendRefreshable.getNick(sendId,1);
+                isSelfSend=true;
+            }
+            if (userName == null) {
+                return returnValue;
+            }
+            String text = (isSelfSend?"我":userName) + ":" + "发送了一张图片";
+            System.out.println("ReceivedMessageHandler:"+userName+":"+msg.getText());
+            messageCache.addMessage(userName, text);
+            if (friendRefreshable.contain(userName)) {
+                String autoMessage = friendRefreshable.getAutoReplay(userName);
+                messageCache.addMessage(userName, "我:" + autoMessage);
+                returnValue = autoMessage;
+            }
+            try{
+                txtAreRefresh.put("refersh");
+            }catch (Exception e){
+
+            }
+
+            requestFocus();
+        }
+        return returnValue;
 //        String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());// 这里使用收到图片的时间作为文件名
 //
 //        String picPath = "D://itchat4j/pic" + File.separator + fileName + ".jpg"; // 调用此方法来保存图片
 //
 //        DownloadTools.getDownloadFn(msg, MsgTypeEnum.PIC.getType(), picPath); // 保存图片的路径
-
-        return  null;
     }
 
     @Override
     public String voiceMsgHandle(BaseMsg msg) {
+        String returnValue = null;
+        if (!msg.isGroupMsg()) { // 群消息不处理
+            String userId = msg.getFromUserName();
+            String userName = friendRefreshable.getNick(userId,1);
+            boolean isSelfSend = false;
+            if (userName == null) {
+                String sendId = msg.getToUserName();
+                userName = friendRefreshable.getNick(sendId,1);
+                isSelfSend=true;
+            }
+            if (userName == null) {
+                return returnValue;
+            }
+            String text = (isSelfSend?"我":userName) + ":" + "发送了一段语音";
+            System.out.println("ReceivedMessageHandler:"+userName+":"+msg.getText());
+            messageCache.addMessage(userName, text);
+            if (friendRefreshable.contain(userName)) {
+                String autoMessage = friendRefreshable.getAutoReplay(userName);
+                messageCache.addMessage(userName, "我:" + autoMessage);
+                returnValue = autoMessage;
+            }
+            try{
+                txtAreRefresh.put("refersh");
+            }catch (Exception e){
+
+            }
+
+            requestFocus();
+        }
+        return returnValue;
 //        String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
 //        String voicePath = "D://itchat4j/voice" + File.separator + fileName + ".mp3";
 //        DownloadTools.getDownloadFn(msg, MsgTypeEnum.VOICE.getType(), voicePath);
-        return  null;
     }
 
     @Override
     public String viedoMsgHandle(BaseMsg msg) {
+        String returnValue = null;
+        if (!msg.isGroupMsg()) { // 群消息不处理
+            String userId = msg.getFromUserName();
+            String userName = friendRefreshable.getNick(userId,1);
+            boolean isSelfSend = false;
+            if (userName == null) {
+                String sendId = msg.getToUserName();
+                userName = friendRefreshable.getNick(sendId,1);
+                isSelfSend=true;
+            }
+            if (userName == null) {
+                return returnValue;
+            }
+            String text = (isSelfSend?"我":userName) + ":" + "发送了一段视频";
+            System.out.println("ReceivedMessageHandler:"+userName+":"+msg.getText());
+            messageCache.addMessage(userName, text);
+            if (friendRefreshable.contain(userName)) {
+                String autoMessage = friendRefreshable.getAutoReplay(userName);
+                messageCache.addMessage(userName, "我:" + autoMessage);
+                returnValue = autoMessage;
+            }
+            try{
+                txtAreRefresh.put("refersh");
+            }catch (Exception e){
+
+            }
+
+            requestFocus();
+        }
+        return returnValue;
 //        String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
 //        String viedoPath = "D://itchat4j/viedo" + File.separator + fileName + ".mp4";
 //        DownloadTools.getDownloadFn(msg, MsgTypeEnum.VIEDO.getType(), viedoPath);
-        return  null;
     }
 
     @Override

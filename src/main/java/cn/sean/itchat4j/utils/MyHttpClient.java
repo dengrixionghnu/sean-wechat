@@ -83,15 +83,16 @@ public class MyHttpClient {
 
 	/**
 	 * 处理GET请求
-	 * 
-	 * @author https://github.com/yaphone
-	 * @date 2017年4月9日 下午7:06:19
+	 *
 	 * @param url
 	 * @param params
+	 * @param timeout
 	 * @return
+	 * @author https://github.com/yaphone
+	 * @date 2017年4月9日 下午7:06:19
 	 */
 	public HttpEntity doGet(String url, List<BasicNameValuePair> params, boolean redirect,
-			Map<String, String> headerMap) {
+							Map<String, String> headerMap, Integer timeout) {
 		HttpEntity entity = null;
 		HttpGet httpGet = new HttpGet();
 
@@ -102,8 +103,20 @@ public class MyHttpClient {
 			} else {
 				httpGet = new HttpGet(url);
 			}
+			RequestConfig.Builder builder = null;
 			if (!redirect) {
-				httpGet.setConfig(RequestConfig.custom().setRedirectsEnabled(false).build()); // 禁止重定向
+				builder =  RequestConfig.custom();
+				builder.setRedirectsEnabled(false);
+			}
+			if(timeout!=null){
+				if(builder == null){
+					builder =  RequestConfig.custom();
+					builder.setConnectTimeout(timeout)
+							.setSocketTimeout(timeout);
+				}
+			}
+			if (builder!=null) {
+				httpGet.setConfig(builder.build()); // 禁止重定向
 			}
 			httpGet.setHeader("User-Agent", Config.USER_AGENT);
 			httpGet.setHeader("client-version", Config.UOS_PATCH_CLIENT_VERSION);
@@ -128,14 +141,15 @@ public class MyHttpClient {
 
 	/**
 	 * 处理POST请求
-	 * 
+	 *
+	 * @param params
+	 * @param url
+	 * @param timeout
+	 * @return
 	 * @author https://github.com/yaphone
 	 * @date 2017年4月9日 下午7:06:35
-	 * @param url
-	 * @param params
-	 * @return
 	 */
-	public HttpEntity doPost(String url, String paramsStr) {
+	public HttpEntity doPost(String url, String paramsStr, Integer timeout) {
 		HttpEntity entity = null;
 		HttpPost httpPost = new HttpPost();
 		try {
@@ -147,6 +161,14 @@ public class MyHttpClient {
 			httpPost.setHeader("client-version", Config.UOS_PATCH_CLIENT_VERSION);
 			httpPost.setHeader("extspam", Config.UOS_PATCH_EXTSPAM);
 			httpPost.setHeader("referer", Config.REFERER);
+
+			if(timeout!=null){
+				RequestConfig.Builder builder = null;
+					builder =  RequestConfig.custom();
+					builder.setConnectTimeout(timeout)
+							.setSocketTimeout(timeout);
+					httpPost.setConfig(builder.build());
+			}
 
 			CloseableHttpResponse response = httpClient.execute(httpPost);
 			entity = response.getEntity();

@@ -120,7 +120,7 @@ public class MessageTools {
 		paramMap.put("Scene", 0);
 		try {
 			String paramStr = JSON.toJSONString(paramMap);
-			HttpEntity entity = myHttpClient.doPost(url, paramStr);
+			HttpEntity entity = myHttpClient.doPost(url, paramStr, null);
 			EntityUtils.toString(entity, Consts.UTF_8);
 		} catch (Exception e) {
 			LOG.error("webWxSendMsg", e);
@@ -254,7 +254,7 @@ public class MessageTools {
 		paramMap.put("BaseRequest", core.getParamMap().get("BaseRequest"));
 		paramMap.put("Msg", msgMap);
 		String paramStr = JSON.toJSONString(paramMap);
-		HttpEntity entity = myHttpClient.doPost(url, paramStr);
+		HttpEntity entity = myHttpClient.doPost(url, paramStr, null);
 		if (entity != null) {
 			try {
 				String result = EntityUtils.toString(entity, Consts.UTF_8);
@@ -350,7 +350,7 @@ public class MessageTools {
 		paramMap.put("Msg", msgMap);
 		paramMap.put("Scene", 0);
 		String paramStr = JSON.toJSONString(paramMap);
-		HttpEntity entity = myHttpClient.doPost(url, paramStr);
+		HttpEntity entity = myHttpClient.doPost(url, paramStr, null);
 		if (entity != null) {
 			try {
 				String result = EntityUtils.toString(entity, Consts.UTF_8);
@@ -407,7 +407,7 @@ public class MessageTools {
 		String result = null;
 		try {
 			String paramStr = JSON.toJSONString(body);
-			HttpEntity entity = myHttpClient.doPost(url, paramStr);
+			HttpEntity entity = myHttpClient.doPost(url, paramStr, null);
 			result = EntityUtils.toString(entity, Consts.UTF_8);
 		} catch (Exception e) {
 			LOG.error("webWxSendMsg", e);

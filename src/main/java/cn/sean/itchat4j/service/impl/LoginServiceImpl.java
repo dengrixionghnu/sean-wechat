@@ -74,7 +74,7 @@ public class LoginServiceImpl implements ILoginService {
             long millis = System.currentTimeMillis();
             params.add(new BasicNameValuePair(LoginParaEnum.R.para(), String.valueOf(millis / 1579L)));
             params.add(new BasicNameValuePair(LoginParaEnum.R_.para(), String.valueOf(millis)));
-            HttpEntity entity = httpClient.doGet(URLEnum.LOGIN_URL.getUrl(), params, true, null);
+            HttpEntity entity = httpClient.doGet(URLEnum.LOGIN_URL.getUrl(), params, true, null, null);
 
             try {
                 String result = EntityUtils.toString(entity);
@@ -108,7 +108,7 @@ public class LoginServiceImpl implements ILoginService {
         params.add(new BasicNameValuePair(UUIDParaEnum.LANG.para(), UUIDParaEnum.LANG.value()));
         params.add(new BasicNameValuePair(UUIDParaEnum.R_.para(), String.valueOf(System.currentTimeMillis())));
 
-        HttpEntity entity = httpClient.doGet(URLEnum.UUID_URL.getUrl(), params, true, null);
+        HttpEntity entity = httpClient.doGet(URLEnum.UUID_URL.getUrl(), params, true, null, null);
 
         try {
             String result = EntityUtils.toString(entity);
@@ -130,7 +130,7 @@ public class LoginServiceImpl implements ILoginService {
     public boolean getQR(String qrPath) {
         qrPath = qrPath + File.separator + "QR.jpg";
         String qrUrl = URLEnum.QRCODE_URL.getUrl() + core.getUuid();
-        HttpEntity entity = myHttpClient.doGet(qrUrl, null, true, null);
+        HttpEntity entity = myHttpClient.doGet(qrUrl, null, true, null, null);
         try {
             OutputStream out = new FileOutputStream(qrPath);
             byte[] bytes = EntityUtils.toByteArray(entity);
@@ -164,7 +164,7 @@ public class LoginServiceImpl implements ILoginService {
         Map<String, Object> paramMap = core.getParamMap();
 
         // 请求初始化接口
-        HttpEntity entity = httpClient.doPost(url, JSON.toJSONString(paramMap));
+        HttpEntity entity = httpClient.doPost(url, JSON.toJSONString(paramMap), null);
         try {
             String result = EntityUtils.toString(entity, Consts.UTF_8);
             JSONObject obj = JSON.parseObject(result);
@@ -233,7 +233,7 @@ public class LoginServiceImpl implements ILoginService {
         String paramStr = JSON.toJSONString(paramMap);
 
         try {
-            HttpEntity entity = httpClient.doPost(url, paramStr);
+            HttpEntity entity = httpClient.doPost(url, paramStr, null);
             EntityUtils.toString(entity, Consts.UTF_8);
         } catch (Exception e) {
             LOG.error("微信状态通知接口失败！", e);
@@ -358,7 +358,7 @@ public class LoginServiceImpl implements ILoginService {
             String url = String.format(URLEnum.WEB_WX_GET_CONTACT.getUrl(),
                     core.getLoginInfo().get(StorageLoginInfoEnum.url.getKey()));
             Map<String, Object> paramMap = core.getParamMap();
-            HttpEntity entity = httpClient.doPost(url, JSON.toJSONString(paramMap));
+            HttpEntity entity = httpClient.doPost(url, JSON.toJSONString(paramMap), null);
 
 
             String result = EntityUtils.toString(entity, Consts.UTF_8);
@@ -379,7 +379,7 @@ public class LoginServiceImpl implements ILoginService {
                 // 设置seq传参
                 params.add(new BasicNameValuePair("r", String.valueOf(currentTime)));
                 params.add(new BasicNameValuePair("seq", String.valueOf(seq)));
-                entity = httpClient.doGet(url, params, false, null);
+                entity = httpClient.doGet(url, params, false, null, null);
 
                 params.remove(new BasicNameValuePair("r", String.valueOf(currentTime)));
                 params.remove(new BasicNameValuePair("seq", String.valueOf(seq)));
@@ -437,7 +437,7 @@ public class LoginServiceImpl implements ILoginService {
             list.add(map);
         }
         paramMap.put("List", list);
-        HttpEntity entity = httpClient.doPost(url, JSON.toJSONString(paramMap));
+        HttpEntity entity = httpClient.doPost(url, JSON.toJSONString(paramMap), null);
         try {
             String text = EntityUtils.toString(entity, Consts.UTF_8);
             JSONObject obj = JSON.parseObject(text);
@@ -511,7 +511,7 @@ public class LoginServiceImpl implements ILoginService {
             String text = "";
 
             try {
-                HttpEntity entity = myHttpClient.doGet(originalUrl, null, false, null);
+                HttpEntity entity = myHttpClient.doGet(originalUrl, null, false, null, null);
                 text = EntityUtils.toString(entity);
             } catch (Exception e) {
                 LOG.info(e.getMessage());
@@ -625,7 +625,7 @@ public class LoginServiceImpl implements ILoginService {
         paramMap.put("rr",String.valueOf(-new Date().getTime()/1000));
         String paramStr = JSON.toJSONString(paramMap);
         try {
-            HttpEntity entity = myHttpClient.doPost(url, paramStr);
+            HttpEntity entity = myHttpClient.doPost(url, paramStr, 1000*20);
             String text = EntityUtils.toString(entity, Consts.UTF_8);
             JSONObject obj = JSON.parseObject(text);
             if (obj.getJSONObject("BaseResponse").getInteger("Ret") != 0) {
@@ -671,7 +671,7 @@ public class LoginServiceImpl implements ILoginService {
         params.add(new BasicNameValuePair("synckey", (String) core.getLoginInfo().get("synckey")));
         //params.add(new BasicNameValuePair("_", String.valueOf(new Date().getTime())));
         try {
-            HttpEntity entity = myHttpClient.doGet(url, params, true, null);
+            HttpEntity entity = myHttpClient.doGet(url, params, true, null, 30*1000);
             if (entity == null) {
                 resultMap.put("retcode", "9999");
                 resultMap.put("selector", "9999");

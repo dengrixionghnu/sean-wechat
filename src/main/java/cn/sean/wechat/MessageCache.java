@@ -1,6 +1,8 @@
 package cn.sean.wechat;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.SimpleFormatter;
 
 /**
  * @author: sean  * @Date 2023/7/24 10:41
@@ -14,11 +16,14 @@ public class MessageCache {
 
     private List<String> autoSyncNames = Arrays.asList("唐智敏");
 
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
+
 
 
     public void init(){
         for(String name:autoSyncNames){
             StringBuilder autoMessageBuilder = new StringBuilder();
+            autoMessageBuilder.append(dateFormatter.format(new Date()));
             SyncToFileUtil sync = new SyncToFileUtil(name, "/Users/apple/resources/wechat/" + name + ".txt",autoSyncMessage);
             sync.startSync();
             autoSyncMessage.put(name,autoMessageBuilder);
