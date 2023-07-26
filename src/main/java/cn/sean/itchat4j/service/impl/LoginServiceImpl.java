@@ -242,45 +242,21 @@ public class LoginServiceImpl implements ILoginService {
 
     }
 
-    private void checkStatus() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        LOG.info("checkStatus。。。。。。");
-                        status = syncCheck();
-                        if (status != null && status.size() != 0) {
-                            String retcode = status.get("retcode");
-                            if (retcode.equals(RetCodeEnum.UNKOWN.getCode())) {
-                                continue;
-                            }
-                            Thread.sleep(1000 * 60);
-                        }
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-        }).start();
-    }
-
     @Override
     public void startReceiving() {
         core.setAlive(true);
-        checkStatus();
         new Thread(new Runnable() {
             int retryCount = 0;
 
             @Override
             public void run() {
-                long requestTime = System.currentTimeMillis();
+                Long requestTime = System.currentTimeMillis();
                 while (core.isAlive()) {
                     try {
                         if (status == null || status.isEmpty()) {
                             continue;
                         }
-                        Map<String, String> resultMap = status;
+                        Map<String, String> resultMap = syncCheck();
                         String retcode = resultMap.get("retcode");
                         String selector = resultMap.get("selector");
                         if (retcode.equals(RetCodeEnum.UNKOWN.getCode())) {
@@ -295,10 +271,13 @@ public class LoginServiceImpl implements ILoginService {
                         } else if (retcode.equals(RetCodeEnum.MOBILE_LOGIN_OUT.getCode())) { // 移动端退出
                             LOG.info(RetCodeEnum.MOBILE_LOGIN_OUT.getType());
                             break;
+                        }else if("1203".equals(retcode)){
+                            Thread.sleep(1000);
+
                         } else if (retcode.equals(RetCodeEnum.NORMAL.getCode())) {
                             core.setLastNormalRetcodeTime(requestTime); // 最后收到正常报文时间
-                            JSONObject msgObj = webWxSync();
                             if (selector.equals("2")) {
+                                JSONObject msgObj = webWxSync();
                                 if (msgObj != null) {
                                     try {
                                         JSONArray msgList = new JSONArray();
@@ -307,6 +286,7 @@ public class LoginServiceImpl implements ILoginService {
                                         for (int j = 0; j < msgList.size(); j++) {
                                             BaseMsg baseMsg = JSON.toJavaObject(msgList.getJSONObject(j),
                                                     BaseMsg.class);
+                                            LOG.info("get Message:"+JSON.toJSONString(baseMsg));
                                             core.getMsgList().put(baseMsg);
                                         }
                                     } catch (Exception e) {
@@ -314,17 +294,8 @@ public class LoginServiceImpl implements ILoginService {
                                     }
                                 }
                                 requestTime = System.currentTimeMillis();
-                            } else if (selector.equals("0")) {
-
-                            } else if (selector.equals("7")) {
-                                webWxSync();
-                            } else if (selector.equals("4")) {
-                                requestTime = System.currentTimeMillis();
-                                continue;
-                            } else if (selector.equals("3")) {
-                                requestTime = System.currentTimeMillis();
-                                continue;
-                            } else if (selector.equals("6")) {
+                            }  else if (selector.equals("6")) {
+                                JSONObject msgObj = webWxSync();
                                 if (msgObj != null) {
                                     try {
                                         JSONArray msgList = new JSONArray();
@@ -344,16 +315,11 @@ public class LoginServiceImpl implements ILoginService {
                                 requestTime = System.currentTimeMillis();
                             }
                         } else {
-                            JSONObject obj = webWxSync();
+
                         }
                     } catch (Exception e) {
                         LOG.info(e.getMessage());
                         retryCount += 1;
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e1) {
-                            LOG.info(e.getMessage());
-                        }
                     }
 
                 }
@@ -651,7 +617,7 @@ public class LoginServiceImpl implements ILoginService {
         Map<String, Object> paramMap = core.getParamMap();
         paramMap.put(StorageLoginInfoEnum.SyncKey.getKey(),
                 core.getLoginInfo().get(StorageLoginInfoEnum.SyncKey.getKey()));
-        paramMap.put("rr", -new Date().getTime() / 1000);
+        paramMap.put("rr",String.valueOf(-new Date().getTime()/1000));
         String paramStr = JSON.toJSONString(paramMap);
         try {
             HttpEntity entity = myHttpClient.doPost(url, paramStr);
@@ -696,9 +662,9 @@ public class LoginServiceImpl implements ILoginService {
             params.add(new BasicNameValuePair(baseRequest.para().toLowerCase(),
                     core.getLoginInfo().get(baseRequest.value()).toString()));
         }
-        params.add(new BasicNameValuePair("r", String.valueOf(new Date().getTime())));
+        params.add(new BasicNameValuePair("r", String.valueOf(new Date().getTime()/1000)));
         params.add(new BasicNameValuePair("synckey", (String) core.getLoginInfo().get("synckey")));
-        params.add(new BasicNameValuePair("_", String.valueOf(new Date().getTime())));
+        //params.add(new BasicNameValuePair("_", String.valueOf(new Date().getTime())));
         try {
             HttpEntity entity = myHttpClient.doGet(url, params, true, null);
             if (entity == null) {

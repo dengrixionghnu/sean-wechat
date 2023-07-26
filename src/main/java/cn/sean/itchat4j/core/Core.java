@@ -72,6 +72,8 @@ public class Core {
 
 	private long lastNormalRetcodeTime; // 最后一次收到正常retcode的时间，秒为单位
 
+	private long lastRequestMessageTime;
+
 	/**
 	 * 请求参数
 	 */
