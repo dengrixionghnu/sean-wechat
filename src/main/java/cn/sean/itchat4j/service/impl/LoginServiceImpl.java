@@ -49,7 +49,6 @@ public class LoginServiceImpl implements ILoginService {
 
     private MyHttpClient myHttpClient = core.getMyHttpClient();
 
-    private volatile Map<String, String> status = new HashMap<>();
 
     private BlockingQueue<String> contactRefresh;
 
@@ -253,10 +252,11 @@ public class LoginServiceImpl implements ILoginService {
                 Long requestTime = System.currentTimeMillis();
                 while (core.isAlive()) {
                     try {
-                        if (status == null || status.isEmpty()) {
+
+                        Map<String, String> resultMap = syncCheck();
+                        if (resultMap == null || resultMap.isEmpty()) {
                             continue;
                         }
-                        Map<String, String> resultMap = syncCheck();
                         String retcode = resultMap.get("retcode");
                         String selector = resultMap.get("selector");
                         if (retcode.equals(RetCodeEnum.UNKOWN.getCode())) {
