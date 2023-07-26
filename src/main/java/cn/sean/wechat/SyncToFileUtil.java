@@ -3,16 +3,19 @@ package cn.sean.wechat;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class SyncToFileUtil {
-    private StringBuilder stringBuilder;
+    private Map<String,StringBuilder> autoSyncMessage;
+    private String name;
     private String filePath;
     private Timer timer;
 
-    public SyncToFileUtil(StringBuilder stringBuilder, String filePath) {
-        this.stringBuilder = stringBuilder;
+    public SyncToFileUtil(String name, String filePath,Map<String,StringBuilder> autoSyncMessage) {
+        this.name = name;
+        this.autoSyncMessage=autoSyncMessage;
         this.filePath = filePath;
         this.timer = new Timer();
     }
@@ -24,16 +27,16 @@ public class SyncToFileUtil {
             public void run() {
                 syncToFile();
             }
-        }, 0, 60 * 1000); // 60 * 1000 表示 1 分钟
+        }, 0, 5*60 * 1000); // 60 * 1000 表示 1 分钟
     }
 
     private synchronized void syncToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            StringBuilder stringBuilder = autoSyncMessage.get(name);
             writer.write(stringBuilder.toString());
             writer.flush();
             // 清空 StringBuilder
-            stringBuilder.setLength(0);
-            System.out.println("Synced to file.");
+           autoSyncMessage.put(name,new StringBuilder());
         } catch (IOException e) {
             e.printStackTrace();
         }

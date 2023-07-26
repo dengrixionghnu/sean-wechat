@@ -251,6 +251,7 @@ public class LoginServiceImpl implements ILoginService {
             public void run() {
                 Long requestTime = System.currentTimeMillis();
                 while (core.isAlive()) {
+                    Long startTime = System.currentTimeMillis();
                     try {
 
                         Map<String, String> resultMap = syncCheck();
@@ -320,6 +321,10 @@ public class LoginServiceImpl implements ILoginService {
                     } catch (Exception e) {
                         LOG.info(e.getMessage());
                         retryCount += 1;
+                    }
+                    Long endTime = System.currentTimeMillis();
+                    if(endTime - startTime>3000){
+                        LOG.info("当前请求同步消息耗时长："+ (endTime-startTime));
                     }
 
                 }

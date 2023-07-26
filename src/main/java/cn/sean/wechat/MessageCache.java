@@ -19,7 +19,7 @@ public class MessageCache {
     public void init(){
         for(String name:autoSyncNames){
             StringBuilder autoMessageBuilder = new StringBuilder();
-            SyncToFileUtil sync = new SyncToFileUtil(autoMessageBuilder, "/Users/apple/resources/wechat/" + name + ".txt");
+            SyncToFileUtil sync = new SyncToFileUtil(name, "/Users/apple/resources/wechat/" + name + ".txt",autoSyncMessage);
             sync.startSync();
             autoSyncMessage.put(name,autoMessageBuilder);
             autoSyncMap.put(name,sync);
