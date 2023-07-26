@@ -323,10 +323,7 @@ public class LoginServiceImpl implements ILoginService {
                         retryCount += 1;
                     }
                     Long endTime = System.currentTimeMillis();
-                    if(endTime - startTime>3000){
-                        LOG.info("当前请求同步消息耗时长："+ (endTime-startTime));
-                    }
-
+                    LOG.info("当前请求同步消息耗时长："+ (endTime-startTime));
                 }
             }
         }).start();
