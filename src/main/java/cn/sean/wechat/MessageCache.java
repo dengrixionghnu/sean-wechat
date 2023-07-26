@@ -36,9 +36,9 @@ public class MessageCache {
         if (Objects.isNull(builder)) {
             builder = new StringBuilder();
             messageMap.put(userId, builder);
-            if(autoSyncNames.contains(userId)){
-                autoSyncMessage.get(userId).append(message + "\n");
-            }
+        }
+        if(autoSyncNames.contains(userId)){
+            autoSyncMessage.get(userId).append(message + "\n");
         }
         builder.append(message + "\n");
     }
